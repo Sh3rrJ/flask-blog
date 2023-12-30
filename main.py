@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from functools import wraps
 from datetime import date
 from hashlib import md5
@@ -11,10 +13,11 @@ from models import User, BlogPost, Comment
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
+load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
 ckeditor = CKEditor(app)
-app.secret_key = "ASFCQkjasncuiqw:KALSNCAij;a"
+app.secret_key = os.getenv('APP_KEY')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -46,6 +49,7 @@ def admin_only(func):
 # Render home page using DB
 @app.route("/")
 def home():
+    print(os.getenv('APP_KEY'))
     if current_user.is_authenticated:
         print(current_user.id, current_user.name)
         print(current_user.posts)
