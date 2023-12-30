@@ -49,12 +49,6 @@ def admin_only(func):
 # Render home page using DB
 @app.route("/")
 def home():
-    print(os.getenv('APP_KEY'))
-    if current_user.is_authenticated:
-        print(current_user.id, current_user.name)
-        print(current_user.posts)
-    else:
-        print('Not authenticated')
     posts_data = db_session.query(BlogPost).all()
     return render_template("index.html", data=posts_data)
 
