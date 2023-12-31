@@ -7,8 +7,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, abo
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
+from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
-from database import db_session
+from database import db_session, engine, init_db
 from models import User, BlogPost, Comment
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
@@ -18,6 +19,9 @@ app = Flask(__name__)
 Bootstrap(app)
 ckeditor = CKEditor(app)
 app.secret_key = os.getenv('APP_KEY')
+
+if not inspect(engine).has_table("blog_post_table"):
+    init_db()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -49,6 +53,7 @@ def admin_only(func):
 # Render home page using DB
 @app.route("/")
 def home():
+
     posts_data = db_session.query(BlogPost).all()
     return render_template("index.html", data=posts_data)
 
@@ -190,3 +195,4 @@ def shutdown_session(exception=None):
 
 if __name__ == "__main__":
     app.run(debug=True)
+

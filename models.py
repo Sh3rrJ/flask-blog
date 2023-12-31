@@ -48,3 +48,7 @@ class Comment(Base):
     post: Mapped['BlogPost'] = relationship(back_populates="comments")
     post_id: Mapped[int] = mapped_column(ForeignKey('blog_post_table.id'))
     text: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+    def __repr__(self):
+        return f"<Comment {self.id}>"
